@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}调试信息{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1>数据库调试信息</h1>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>数据库文件状态</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>数据库文件:</strong> {{ db_name }}</p>
+                <p><strong>文件存在:</strong> 
+                    <span class="badge bg-{% if db_exists %}success{% else %}danger{% endif %}">
+                        {{ db_exists }}
+                    </span>
+                </p>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>表格列表</h5>
+            </div>
+            <div class="card-body">
+                {% if tables %}
+                    <ul>
+                    {% for table in tables %}
+                        <li>{{ table }}</li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-danger">没有找到任何表格！</p>
+                {% endif %}
+            </div>
+        </div>
+
+        {% for table, info in table_info.items() %}
+            {% if not table.endswith('_sample') %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>表结构: {{ table }}</h5>
+                </div>
+                <div class="card-body">
+                    {% if info is string %}
+                        <p class="text-danger">{{ info }}</p>
+                    {% else %}
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>列ID</th>
+                                    <th>列名</th>
+                                    <th>数据类型</th>
+                                    <th>是否可空</th>
+                                    <th>默认值</th>
+                                    <th>主键</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for column in info %}
+                                <tr>
+                                    <td>{{ column[0] }}</td>
+                                    <td>{{ column[1] }}</td>
+                                    <td>{{ column[2] }}</td>
+                                    <td>{{ column[3] }}</td>
+                                    <td>{{ column[4] }}</td>
+                                    <td>{{ column[5] }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        
+                        {% set sample_key = table + '_sample' %}
+                        {% if sample_key in table_info %}
+                        <h6>样本数据:</h6>
+                        <pre>{{ table_info[sample_key] }}</pre>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

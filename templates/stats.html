@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}统计 - B站视频数据库{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1>数据库统计</h1>
+        
+        {% if stats_data %}
+            <div class="row">
+                {% for stat in stats_data %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ stat.table_name }}</h5>
+                            <p class="card-text">
+                                <span class="fs-4 text-primary">{{ stat.video_count }}</span> 个视频
+                            </p>
+                            <a href="{{ url_for('show_table', table_name=stat.table_name) }}" class="btn btn-primary">查看详情</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-warning" role="alert">
+                没有找到统计数据。
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

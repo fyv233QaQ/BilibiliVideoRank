@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}首页 - B站视频数据库{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>数据库表格列表</h1>
+        </div>
+
+        {% if table_info %}
+            <div class="row">
+                {% for table in table_info %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ table.name }}</h5>
+                            <p class="card-text">
+                                <span class="fs-4 text-primary">{{ table.count }}</span> 个视频
+                            </p>
+                            <p class="card-text">
+                                <small class="text-muted">{{ table.last_update }}</small>
+                            </p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="{{ url_for('show_table', table_name=table.name) }}" class="btn btn-primary btn-sm">查看详情</a>
+                            {% if table.can_update %}
+                            <form action="{{ url_for('update_table', table_name=table.name) }}" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-warning btn-sm">更新数据</button>
+                            </form>
+                            {% else %}
+                            <button class="btn btn-secondary btn-sm" disabled>更新数据</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-warning" role="alert">
+                没有找到任何表格。请先创建表格。
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
